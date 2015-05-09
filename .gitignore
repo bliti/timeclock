@@ -1,3 +1,8 @@
+#local dev settings
+*.DS_Store
+local_settings.py
+*.sqlite3
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
