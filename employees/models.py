@@ -15,7 +15,7 @@ class Employee(models.Model):
     Its optional
     """
     
-    username = models.TextField()
+    username = models.TextField(unique=True)
     name = models.TextField()
     identifier = models.CharField(max_length=256,null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)

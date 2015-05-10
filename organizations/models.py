@@ -23,7 +23,7 @@ class Organization(models.Model):
     
     """
 
-    name = models.TextField()
+    name = models.TextField(unique=True)
     password = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
 
