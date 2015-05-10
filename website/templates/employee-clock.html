@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Clock{% endblock %}
+{% block content %}
+    <div class="container">
+
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Clock</h2>
+        <label for="inputCompany" class="sr-only">Organization</label>
+        <input id="inputCompany" class="form-control" placeholder="Organization Name" required="" autofocus="" type="text">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input id="inputPassword" class="form-control" placeholder="Password" required="" type="password">
+
+        <button class="btn btn-lg btn-default btn-block" type="submit"><i class="fa fa-clock-o fa-5x"></i>
+</button>
+      </form>
+
+    </div> <!-- /container -->
+{% endblock %}
