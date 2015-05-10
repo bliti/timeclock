@@ -2,7 +2,7 @@ from django.db import models
 from employees.models import Employee
 
 
-class Clock(models.Model):
+class EmployeeClock(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     employee = models.ForeignKey(Employee)
 
@@ -10,5 +10,5 @@ class Clock(models.Model):
     def __unicode__(self):
         return "{employee} - {timestamp}".format(
             employee=self.employee.name,
-            timestamp=self.timestamp.strftime('%I:%X')
+            timestamp=self.timestamp.strftime('%D %I:%X')
             )

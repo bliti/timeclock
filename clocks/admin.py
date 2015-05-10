@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Clock
+from .models import EmployeeClock
 
 
-admin.site.register(Clock)
+admin.site.register(EmployeeClock)
