@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'employees',
     'clocks',
     'organizations',
+    'website',
 )
 
 MIDDLEWARE_CLASSES = (
