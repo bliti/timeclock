@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'employees',
     'clocks',
+    'organizations',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -8,4 +8,7 @@ class Clock(models.Model):
 
 
     def __unicode__(self):
-        return self.timestamp    
+        return "{employee} - {timestamp}".format(
+            employee=self.employee.name,
+            timestamp=self.timestamp.strftime('%I:%X')
+            )

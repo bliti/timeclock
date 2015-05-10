@@ -1,4 +1,5 @@
 from django.db import models
+from organizations.models import Organization
 
 
 class Employee(models.Model):
@@ -9,6 +10,8 @@ class Employee(models.Model):
     
     username = models.TextField()
     name = models.TextField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    organization = models.ForeignKey(Organization)
 
 
     def __unicode__(self):
