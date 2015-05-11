@@ -12,7 +12,12 @@ class OrganizationView(FormView):
     form_class = OrganizationForm
     success_url = reverse_lazy('employee-view')
 
+
     def form_valid(self, form):
+        """
+        Checks to see if the organization credentials
+        being posted are correct.
+        """
         try:
             organization = Organization.objects.get(name=form.cleaned_data['name'], password=form.cleaned_data['password'])
             self.request.session['organization_name'] = organization.name
@@ -37,5 +42,4 @@ class EmployeeView(FormView):
     
 
 class EmployeeClockView(TemplateView):
-    template_name = "employee-clock.html"
-                   
+    template_name = "employee-clock.html"                
