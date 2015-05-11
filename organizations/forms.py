@@ -1,7 +1,7 @@
 from django import forms
 
 
-class OrganizationForm(forms.Form):
+class OrganizationLoginForm(forms.Form):
     """
     The label='' parameter tells Django
     to remove the default labels included 

@@ -3,13 +3,10 @@
 {% block content %}
     <div class="container">
 
-      <form class="form-signin">
+      <form class="form-signin" method="post" action="{% url 'employee-view' %}">
         <h2 class="form-signin-heading">Employee</h2>
-        <label for="inputCompany" class="sr-only">Organization</label>
-        <input id="inputCompany" class="form-control" placeholder="Organization Name" required="" autofocus="" type="text">
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input id="inputPassword" class="form-control" placeholder="Password" required="" type="password">
-
+		{% csrf_token %}
+		{{ form }}
         <button class="btn btn-lg btn-default btn-block" type="submit"><i class="fa fa-sign-in fa-5x"></i></button>
       </form>
 
