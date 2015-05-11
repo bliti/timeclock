@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.views.generic import TemplateView, FormView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from organizations.forms import OrganizationForm
 from organizations.models import Organization
 
@@ -14,7 +14,7 @@ class OrganizationView(FormView):
 
     def form_valid(self, form):
         try:
-            organization = Organization.objects.get(name=form.cleaned_data['name'])
+            organization = Organization.objects.get(name=form.cleaned_data['name'], password=form.cleaned_data['password'])
             self.request.session['organization_name'] = organization.name
             return super(OrganizationView, self).form_valid(form)
         
@@ -30,9 +30,11 @@ class OrganizationView(FormView):
         return redirect(reverse_lazy('organization-view'))
 
 
-class EmployeeView(TemplateView):
+class EmployeeView(FormView):
     template_name = "employee.html"
-
+    form_class = None
+    success_url = reverse_lazy('employee-clock-view')
+    
 
 class EmployeeClockView(TemplateView):
     template_name = "employee-clock.html"
