@@ -98,9 +98,8 @@ class EmployeeClockView(TemplateView):
             employee=employee
             )
         
-        #log the employee out automatically
-        del request.session['username']
-        return redirect(reverse_lazy('employee-view'))
+        #log the employee out automatically after a clock
+        return redirect(reverse_lazy('employee-signout-view'))
 
 
 class OrganizationSignOutView(View):
@@ -125,4 +124,28 @@ class OrganizationSignOutView(View):
     
     
     def post(self, request, *args, **kwargs):
-        return redirect('organization-view')   
+        return redirect('organization-view')
+
+
+class EmployeeSignOutView(View):
+    """
+    Signs out an employee
+    """ 
+    
+    
+    def get(self, request, *args, **kwargs):
+        """
+        Deletes the organization session
+        """ 
+        try:
+            del request.session['username']
+        except KeyError:
+            pass
+            #reason for pass is that if the key does not exist
+            #it means that the organization will be signed out anyways.
+            #No need to handle the exception with any special instruction.   
+        return redirect(reverse_lazy('employee-view'))
+    
+    
+    def post(self, request, *args, **kwargs):
+        return redirect('employee-view') 
