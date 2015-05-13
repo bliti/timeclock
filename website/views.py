@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse_lazy
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from django.views.generic import TemplateView, FormView
+from django.views.generic import View, TemplateView, FormView
 from django.shortcuts import redirect, render
 from organizations.forms import OrganizationLoginForm
 from organizations.models import Organization
@@ -15,7 +15,7 @@ class OrganizationView(FormView):
     template_name = "organization.html"
     form_class = OrganizationLoginForm
     success_url = reverse_lazy('employee-view')
-
+    
 
     def form_valid(self, form):
         """
@@ -101,6 +101,28 @@ class EmployeeClockView(TemplateView):
         #log the employee out automatically
         del request.session['username']
         return redirect(reverse_lazy('employee-view'))
-        
-        
-            
+
+
+class OrganizationSignOutView(View):
+    """
+    Signs out an organization to
+    prevent employees from clocking.
+    """ 
+    
+    
+    def get(self, request, *args, **kwargs):
+        """
+        Deletes the organization session
+        """ 
+        try:
+            del request.session['organization_name']
+        except KeyError:
+            pass
+            #reason for pass is that if the key does not exist
+            #it means that the organization will be signed out anyways.
+            #No need to handle the exception with any special instruction.   
+        return redirect(reverse_lazy('organization-view'))
+    
+    
+    def post(self, request, *args, **kwargs):
+        return redirect('organization-view')   
