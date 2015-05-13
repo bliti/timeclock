@@ -7,6 +7,8 @@ from organizations.forms import OrganizationLoginForm
 from organizations.models import Organization
 from employees.forms import EmployeeLoginForm
 from employees.models import Employee
+from clocks.models import EmployeeClock
+from datetime import datetime
 
 
 class OrganizationView(FormView):
@@ -66,4 +68,39 @@ class EmployeeView(FormView):
     
 
 class EmployeeClockView(TemplateView):
-    template_name = "employee-clock.html"                
+    template_name = "employee-clock.html"
+
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles the clock button being clicked.
+        """
+        #make sure the employee is logged in. Double check
+        try:
+            username = request.session['username']
+        except KeyError:
+            messages.add_message(self.request, messages.WARNING, 'Sign in to continue')
+            return redirect(reverse_lazy('employee-view'))
+        
+        #get the employee object before we construct the clock object
+        try:
+            employee = Employee.objects.get(username=username)
+        except ObjectDoesNotExist:
+            messages.add_message(self.request, messages.WARNING, 'There was an error in your request. Please try again.')
+            return redirect(reverse_lazy('employee-view'))
+        except MultipleObjectsReturned:
+            messages.add_message(self.request, messages.WARNING, 'There was an error in your request. Please try again.')
+            return redirect(reverse_lazy('employee-view'))
+        
+        #clock the employee
+        clock = EmployeeClock.objects.create(
+            timestamp=datetime.now(),
+            employee=employee
+            )
+        
+        #log the employee out automatically
+        del request.session['username']
+        return redirect(reverse_lazy('employee-view'))
+        
+        
+            
