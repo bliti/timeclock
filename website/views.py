@@ -28,14 +28,14 @@ class OrganizationView(FormView):
             return super(OrganizationView, self).form_valid(form)
         
         except ObjectDoesNotExist:
-            messages.add_message(self.request, messages.WARNING, 'Incorrect Organization Credentials')
+            messages.add_message(self.request, messages.ERROR, 'Incorrect Organization Credentials')
             return redirect(reverse_lazy('organization-view'))
         
         except MultipleObjectsReturned:
-            messages.add_message(self.request, messages.WARNING, 'There was an error in your request. Please try again.')
+            messages.add_message(self.request, messages.ERROR, 'There was an error in your request. Please try again.')
             return redirect(reverse_lazy('organization-view'))
         
-        messages.add_message(self.request, messages.WARNING, 'Something went wrong. Please try again.')
+        messages.add_message(self.request, messages.ERROR, 'Something went wrong. Please try again.')
         return redirect(reverse_lazy('organization-view'))
 
 
@@ -56,14 +56,14 @@ class EmployeeView(FormView):
             return super(EmployeeView, self).form_valid(form)
         
         except ObjectDoesNotExist:
-            messages.add_message(self.request, messages.WARNING, 'Incorrect Employee')
+            messages.add_message(self.request, messages.ERROR, 'Incorrect Employee')
             return redirect(reverse_lazy('employee-view'))
         
         except MultipleObjectsReturned:
-            messages.add_message(self.request, messages.WARNING, 'There was an error in your request. Please try again.')
+            messages.add_message(self.request, messages.ERROR, 'There was an error in your request. Please try again.')
             return redirect(reverse_lazy('employee-view'))
         
-        messages.add_message(self.request, messages.WARNING, 'Something went wrong. Please try again.')
+        messages.add_message(self.request, messages.ERROR, 'Something went wrong. Please try again.')
         return redirect(reverse_lazy('employee-view'))
 
 
@@ -79,17 +79,17 @@ class EmployeeClockView(TemplateView):
         try:
             username = request.session['username']
         except KeyError:
-            messages.add_message(self.request, messages.WARNING, 'Sign in to continue')
+            messages.add_message(self.request, messages.ERROR, 'Sign in to continue')
             return redirect(reverse_lazy('employee-view'))
         
         #get the employee object before we construct the clock object
         try:
             employee = Employee.objects.get(username=username)
         except ObjectDoesNotExist:
-            messages.add_message(self.request, messages.WARNING, 'There was an error in your request. Please try again.')
+            messages.add_message(self.request, messages.ERROR, 'There was an error in your request. Please try again.')
             return redirect(reverse_lazy('employee-view'))
         except MultipleObjectsReturned:
-            messages.add_message(self.request, messages.WARNING, 'There was an error in your request. Please try again.')
+            messages.add_message(self.request, messages.ERROR, 'There was an error in your request. Please try again.')
             return redirect(reverse_lazy('employee-view'))
         
         #clock the employee
@@ -97,6 +97,8 @@ class EmployeeClockView(TemplateView):
             timestamp=datetime.now(),
             employee=employee
             )
+        
+        messages.add_message(self.request, messages.SUCCESS, 'You were successfully clocked.')
         
         #log the employee out automatically after a clock
         return redirect(reverse_lazy('employee-signout-view'))
@@ -143,7 +145,8 @@ class OrganizationSignOutView(View):
             pass
             #reason for pass is that if the key does not exist
             #it means that the organization will be signed out anyways.
-            #No need to handle the exception with any special instruction.   
+            #No need to handle the exception with any special instruction.
+        messages.add_message(self.request, messages.SUCCESS, 'You were successfully signed out.')  
         return redirect(reverse_lazy('organization-view'))
     
     
@@ -167,7 +170,8 @@ class EmployeeSignOutView(View):
             pass
             #reason for pass is that if the key does not exist
             #it means that the organization will be signed out anyways.
-            #No need to handle the exception with any special instruction.   
+            #No need to handle the exception with any special instruction.
+        messages.add_message(self.request, messages.SUCCESS, 'You were successfully signed out.')     
         return redirect(reverse_lazy('employee-view'))
     
     

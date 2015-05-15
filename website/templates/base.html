@@ -66,7 +66,7 @@ body {
 
 /* messages */
 .messages {
-	padding-top: 30px;
+	padding-top: 40px;
 }
 
 .employee-input {
@@ -92,7 +92,10 @@ body {
 	<div class="container messages">
 	<ul class="list-unstyled">
 	    {% for message in messages %}
-		<li><div class="col-sm-12 alert alert-danger" role="alert"><h5>{{ message }}</h5></div></li>
+
+				<li><div class="col-sm-12 alert alert-{{ message.tags }}" role="alert"><h5>{{ message }}</h5></div></li>
+		
+
 		
 	    {% endfor %}
 	</ul>
