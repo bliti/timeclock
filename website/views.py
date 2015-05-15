@@ -146,7 +146,7 @@ class OrganizationSignOutView(View):
             #reason for pass is that if the key does not exist
             #it means that the organization will be signed out anyways.
             #No need to handle the exception with any special instruction.
-        messages.add_message(self.request, messages.SUCCESS, 'You were successfully signed out.')  
+        messages.add_message(self.request, messages.SUCCESS, 'You were successfully signed out of the organization.')  
         return redirect(reverse_lazy('organization-view'))
     
     
