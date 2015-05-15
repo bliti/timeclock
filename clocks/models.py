@@ -18,15 +18,21 @@ class EmployeeClock(models.Model):
     #these are little helpers
     #for reporting and search
     @property
-    def month(self):
+    def get_month(self):
         return self.timestamp.month
     
-    
     @property
-    def day(self):
+    def get_day(self):
         return self.timestap.day
     
-    
     @property
-    def year(self):
+    def get_year(self):
         return self.timestamp.year
+
+    @property
+    def get_time(self):
+        return self.timestamp.time
+
+    @property
+    def get_name(self):
+        return self.employee.name

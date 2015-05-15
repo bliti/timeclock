@@ -65,7 +65,7 @@ class EmployeeView(FormView):
         
         messages.add_message(self.request, messages.WARNING, 'Something went wrong. Please try again.')
         return redirect(reverse_lazy('employee-view'))
-    
+
 
 class EmployeeClockView(TemplateView):
     template_name = "employee-clock.html"
@@ -101,6 +101,30 @@ class EmployeeClockView(TemplateView):
         #log the employee out automatically after a clock
         return redirect(reverse_lazy('employee-signout-view'))
 
+
+    def get_context_data(self, **kwargs):
+        """
+        Adding the last 10 clocks
+        from this specific employee.
+        """        
+        #this is so ugly.
+        context = super(EmployeeClockView, self).get_context_data(**kwargs)
+        
+        try:
+            employee = Employee.objects.get(username=self.request.session['username'])
+            context = super(EmployeeClockView, self).get_context_data(**kwargs)
+            #django ORM, you so ugly.
+            #get the latest 10 clocks query.
+            context['recent_clocks'] = EmployeeClock.objects.filter(employee=employee).order_by('-pk')[:10]
+        
+        except ObjectDoesNotExist:
+            return context
+
+        except MultipleObjectsReturned:
+            return context
+
+        return context
+        
 
 class OrganizationSignOutView(View):
     """

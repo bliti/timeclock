@@ -15,4 +15,34 @@
       </form>
 
     </div> <!-- /container -->
+
+
+
+
+	<div class="container recent-activity">
+	
+		{% if recent_clocks %}
+			<div class="table-responsive">
+			
+				<table class="table table-striped">
+					<tr>
+						<thead><h5>Recent Activity</h5></thead>
+					</tr>
+			
+					{% for clock in recent_clocks %}
+						<tr>
+							<td>{{ clock }}</td>
+						</tr>
+			
+					{% endfor %}
+			
+				</table>
+			</div>
+		{% else %}
+		
+			<div class="col-sm-12 alert alert-primary" role="alert"><h5>No recent activity.</h5></div>
+		
+		{% endif %}
+	
+	</div>
 {% endblock %}
