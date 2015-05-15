@@ -85,10 +85,7 @@ class EmployeeClockView(TemplateView):
         #get the employee object before we construct the clock object
         try:
             employee = Employee.objects.get(username=username)
-        except ObjectDoesNotExist:
-            messages.add_message(self.request, messages.ERROR, 'There was an error in your request. Please try again.')
-            return redirect(reverse_lazy('employee-view'))
-        except MultipleObjectsReturned:
+        except (ObjectDoesNotExist, MultipleObjectsReturned):
             messages.add_message(self.request, messages.ERROR, 'There was an error in your request. Please try again.')
             return redirect(reverse_lazy('employee-view'))
         
@@ -119,10 +116,7 @@ class EmployeeClockView(TemplateView):
             #get the latest 10 clocks query.
             context['recent_clocks'] = EmployeeClock.objects.filter(employee=employee).order_by('-pk')[:10]
         
-        except ObjectDoesNotExist:
-            return context
-
-        except MultipleObjectsReturned:
+        except (ObjectDoesNotExist, MultipleObjectsReturned):
             return context
 
         return context
