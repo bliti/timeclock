@@ -1,6 +1,7 @@
 #local dev settings
 *.DS_Store
 local_settings.py
+settings.py
 *.sqlite3
 migrations/
 
