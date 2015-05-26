@@ -1,6 +1,9 @@
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 
 
+@python_2_unicode_compatible
 class Organization(models.Model):
     """
     The organization object refers to
@@ -27,6 +30,6 @@ class Organization(models.Model):
     password = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
 
-
-    def __unicode__(self):
+    
+    def __str__(self):
         return self.name

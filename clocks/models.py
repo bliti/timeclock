@@ -1,14 +1,17 @@
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from employees.models import Employee
 
 
+@python_2_unicode_compatible
 class EmployeeClock(models.Model):
     timestamp = models.DateTimeField()
     employee = models.ForeignKey(Employee)
     date_created = models.DateTimeField(auto_now_add=True)
 
 
-    def __unicode__(self):
+    def __str__(self):
         return "{employee} - {timestamp}".format(
             employee=self.employee.name,
             timestamp=self.timestamp.strftime('%D %X')

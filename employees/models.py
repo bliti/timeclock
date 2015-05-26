@@ -1,7 +1,10 @@
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from organizations.models import Organization
 
 
+@python_2_unicode_compatible
 class Employee(models.Model):
     """
     Employee username is not used to log in an user.
@@ -22,5 +25,5 @@ class Employee(models.Model):
     organization = models.ForeignKey(Organization)
 
 
-    def __unicode__(self):
+    def __str__(self):
         return self.username
