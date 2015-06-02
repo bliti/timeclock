@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Clock Weekly Report{% endblock %}
+
+{% block navbar %}
+{% include "employee-navbar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+   <h1>Week {{ week|date:'W' }}</h1>
+
+   <ul>
+       {% for clock in object_list %}
+           <li>{{ clock.date_created|date:"F j, Y" }}: {{ clock.timestamp }}</li>
+       {% endfor %}
+   </ul>
+
+   <p>
+       {% if previous_week %}
+           Previous Week: {{ previous_week|date:"W - D d F Y" }}
+       {% endif %}
+       {% if previous_week and next_week %}--{% endif %}
+       {% if next_week %}
+           Next week: {{ next_week|date:"W - D d F Y" }}
+		   
+	
+       {% endif %}
+   </p>
+</div>
+{% endblock %}

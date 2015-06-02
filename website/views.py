@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse_lazy
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from django.views.generic import View, TemplateView, FormView
+from django.views.generic import View, TemplateView, FormView, WeekArchiveView
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from organizations.forms import OrganizationLoginForm
@@ -178,4 +178,18 @@ class EmployeeSignOutView(View):
     
     
     def post(self, request, *args, **kwargs):
-        return redirect('employee-view') 
+        return redirect('employee-view')
+
+
+#reports
+class WeeklyClockReportView(WeekArchiveView):
+    """
+    Displays all clocks that fall whithin a given week.
+    To allow employees to see their past clocks.
+    """
+    template_name = 'employeeclock_archive_week.html'
+    queryset = EmployeeClock.objects.all()
+    date_field = "timestamp"
+    week_format = "%W"
+    allow_future = True
+    alow_empty = True
