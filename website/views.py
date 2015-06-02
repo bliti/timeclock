@@ -173,8 +173,7 @@ class EmployeeSignOutView(View):
             pass
             #reason for pass is that if the key does not exist
             #it means that the organization will be signed out anyways.
-            #No need to handle the exception with any special instruction.
-        messages.add_message(self.request, messages.SUCCESS, 'You were successfully signed out.')     
+            #No need to handle the exception with any special instruction.    
         return redirect(reverse_lazy('employee-view'))
     
     
