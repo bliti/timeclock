@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.views.generic import View, TemplateView, FormView
 from django.shortcuts import redirect, render
+from django.utils import timezone
 from organizations.forms import OrganizationLoginForm
 from organizations.models import Organization
 from employees.forms import EmployeeLoginForm
@@ -91,7 +92,7 @@ class EmployeeClockView(TemplateView):
         
         #clock the employee
         clock = EmployeeClock.objects.create(
-            timestamp=datetime.now(),
+            timestamp=timezone.now(),
             employee=employee
             )
         
