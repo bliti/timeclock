@@ -96,7 +96,15 @@ class EmployeeClockView(TemplateView):
             employee=employee
             )
         
-        messages.add_message(self.request, messages.SUCCESS, 'You were successfully clocked.')
+        time_format = '%I:%M %p'
+        time = datetime.strftime(clock.timestamp, time_format)
+        messages.add_message(
+            self.request,
+            messages.SUCCESS, 
+            '{user} was successfully clocked at {time}'.format(
+                user=employee.name,time=time
+            )
+        )
         
         #log the employee out automatically after a clock
         return redirect(reverse_lazy('employee-signout-view'))
