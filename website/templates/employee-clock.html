@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load tz %}
+
 
 {% block title %}Clock{% endblock %}
 
@@ -34,9 +34,7 @@
 			
 					{% for clock in recent_clocks %}
 						<tr>
-							
-							    <td>{{ clock|timezone:"America/Puerto_Rico" }}</td>
-							
+							<td>{{ clock }}</td>
 						</tr>
 			
 					{% endfor %}

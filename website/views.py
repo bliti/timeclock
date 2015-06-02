@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.views.generic import View, TemplateView, FormView
 from django.shortcuts import redirect, render
 from django.utils import timezone
+from django.conf import settings
 from organizations.forms import OrganizationLoginForm
 from organizations.models import Organization
 from employees.forms import EmployeeLoginForm
