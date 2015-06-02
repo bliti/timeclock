@@ -34,7 +34,7 @@
 			
 					{% for clock in recent_clocks %}
 						<tr>
-							<td>{{ clock }}</td>
+							<td>{{ clock.timestamp|date:'l d-F-Y f a' }}</td>
 						</tr>
 			
 					{% endfor %}
