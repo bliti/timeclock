@@ -34,9 +34,9 @@
 			
 					{% for clock in recent_clocks %}
 						<tr>
-							{% timezone "America/Puerto_Rico" %}
-							    <td>{{ clock }}</td>
-							{% endtimezone %}
+							
+							    <td>{{ clock|timezone:"America/Puerto_Rico" }}</td>
+							
 						</tr>
 			
 					{% endfor %}
