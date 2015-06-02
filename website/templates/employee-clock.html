@@ -1,3 +1,5 @@
+{% load tz %}
+
 {% extends "base.html" %}
 {% block title %}Clock{% endblock %}
 
@@ -31,7 +33,7 @@
 			
 					{% for clock in recent_clocks %}
 						<tr>
-							<td>{{ clock }}</td>
+							<td>{{ clock|localtime }}</td>
 						</tr>
 			
 					{% endfor %}
