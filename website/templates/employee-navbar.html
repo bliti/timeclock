@@ -1,15 +1,13 @@
 <div class="container">
 	
-	
-	
-	
-	
 		<div class="pull-left">
-			<a href="{% url 'weekly-clock-report' 2015 0 %}" class="btn btn-primary"><i class="fa fa-book fa-2x"></i>
+			<a href="{% url 'clock-search' %}" class="btn btn-primary"><i class="fa fa-search fa-2x"></i>
 	</a>
 		</div>
-	
-	
+		<div class="pull-left nav-item">
+			<a href="{% url 'employee-clock-view' %}" class="btn btn-primary"><i class="fa fa-clock-o fa-2x"></i>
+	</a>
+		</div>
 	
 	<div class="pull-right">
 		<a href="{% url 'employee-signout-view' %}" class="btn btn-primary"><i class="fa fa-sign-out fa-2x"></i>

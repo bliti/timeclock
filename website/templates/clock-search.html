@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+
+
+{% block title %}Search clock history{% endblock %}
+
+{% block css %}
+
+.results {
+	margin-top: 40px
+}
+
+{% endblock %}
+
+{% block navbar %}
+{% include "employee-navbar.html" %}
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="container">
+		
+	  {% if clocks %}
+	  
+	  		
+			
+			<div class="results table-responsive">
+	
+				<table class="table table-striped table-bordered">
+					<tr>
+						<thead><h5>Search Results</h5></thead>
+					</tr>
+	
+					{% for clock in clocks %}
+						<tr>
+							<td>{{ clock.timestamp|date:'l d-F-Y f a' }}</td>
+						</tr>
+	
+					{% endfor %}
+	
+				</table>
+			</div>
+	   
+	  {% else %}
+
+      <form class="form-date-search" method="post" action="{% url 'clock-search' %}">
+        <h2 class="form-signin-heading">Search Clocks</h2>
+		{% csrf_token %}
+		{{ form }}
+		<br>
+        <button class="btn btn-lg btn-default btn-block" type="submit"><i class="fa fa-search fa-5x"></i>
+</button>
+      </form>
+	  
+	  {% endif %}
+
+    </div> <!-- /container -->
+
+
+
+{% endblock %}

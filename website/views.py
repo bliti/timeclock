@@ -9,6 +9,7 @@ from organizations.models import Organization
 from employees.forms import EmployeeLoginForm
 from employees.models import Employee
 from clocks.models import EmployeeClock
+from clocks.forms import ClockSearchForm
 from datetime import datetime
 
 
@@ -181,15 +182,75 @@ class EmployeeSignOutView(View):
         return redirect('employee-view')
 
 
-#reports
-class WeeklyClockReportView(WeekArchiveView):
+class EmployeeClockSearchView(FormView):
     """
-    Displays all clocks that fall whithin a given week.
-    To allow employees to see their past clocks.
+    View that allows employee objects to
+    search for clock objects by providing
+    the day, month, and year of the clocks.
+    
+    Uses a range filter
     """
-    template_name = 'employeeclock_archive_week.html'
-    queryset = EmployeeClock.objects.all()
-    date_field = "timestamp"
-    week_format = "%W"
-    allow_future = True
-    alow_empty = True
+    template_name = 'clock-search.html'
+    form_class = ClockSearchForm
+    success_url = reverse_lazy('clock-search')
+    
+    
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        
+        #if the form is valid we process the data and make the query
+        if form.is_valid():
+            #make sure the employee is logged in. Double check
+            try:
+                username = self.request.session['username']
+            except KeyError:
+                messages.add_message(self.request, messages.ERROR, 'Sign in to continue')
+                return redirect(reverse_lazy('employee-view'))
+        
+            #get the employee object before we search for the clocks
+            try:
+                employee = Employee.objects.get(username=username)
+            except (ObjectDoesNotExist, MultipleObjectsReturned):
+                messages.add_message(self.request, messages.ERROR, 'There was an error in your request. Please try again.')
+                return redirect(reverse_lazy('employee-view'))        
+        
+            #filter clocks by date range selected on form
+            try:
+                #format the strings to input some sanity into this shit.
+                from_date_string = '{y}{m}{d}'.format(
+                                                    y=form.cleaned_data['from_year'],
+                                                    m=form.cleaned_data['from_month'],
+                                                    d=form.cleaned_data['from_day']
+                                                    )
+            
+                to_date_string = '{y}{m}{d}'.format(
+                                                    y=form.cleaned_data['to_year'],
+                                                    m=form.cleaned_data['to_month'],
+                                                    d=form.cleaned_data['to_day']
+                                                    )
+                #lets build the date objects first
+                from_date = datetime.strptime(from_date_string, "%Y%m%d").date()
+                to_date = datetime.strptime(to_date_string, "%Y%m%d").date()
+            
+                #worst filter ever
+                clocks = EmployeeClock.objects.filter(
+                                            timestamp__gt=from_date,
+                                            timestamp__lt=to_date,
+                                            employee=employee
+                                            )
+            
+                #pass the results from the filter to the context data
+                context = self.get_context_data(**kwargs)
+                context['clocks'] = clocks
+                return render(request, self.template_name, context)
+            
+            except Exception as e:
+                messages.add_message(self.request, messages.ERROR, 'Error: {error}'.format(error=e))
+                return redirect(reverse_lazy('clock-search'))
+        
+            messages.add_message(self.request, messages.ERROR, 'Something went wrong. Please try again.')
+            return redirect(reverse_lazy('employee-view'))
+        
+        else:
+            return self.form_invalid(form, **kwargs)
