@@ -54,6 +54,12 @@
       </form>
 	  
 	  {% endif %}
+	  
+	  <!--  test form, not something that will be used.-->
+	  <form method="post" action="{% url 'employee-clock-report' %}">
+		  {% csrf_token %}
+		  <input type="submit" value="report">
+	  </form>
 
     </div> <!-- /container -->
 

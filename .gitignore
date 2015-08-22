@@ -4,6 +4,7 @@ local_settings.py
 settings.py
 *.sqlite3
 migrations/
+xlsx/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

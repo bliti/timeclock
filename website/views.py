@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.views.generic import View, TemplateView, FormView, WeekArchiveView
 from django.shortcuts import redirect, render
 from django.utils import timezone
+from django.http import HttpResponse
 from organizations.forms import OrganizationLoginForm
 from organizations.models import Organization
 from employees.forms import EmployeeLoginForm
@@ -11,6 +12,8 @@ from employees.models import Employee
 from clocks.models import EmployeeClock
 from clocks.forms import ClockSearchForm
 from datetime import datetime
+import xlsxwriter
+import io
 
 
 class OrganizationView(FormView):
@@ -254,3 +257,38 @@ class EmployeeClockSearchView(FormView):
         
         else:
             return self.form_invalid(form, **kwargs)
+
+
+class EmployeeXlsxReportView(View):
+    """
+    Generates an Xlsx file based report
+    for an employees clocks in a given period.
+    """ 
+    
+    
+    def get(self, request, *args, **kwargs):
+        """
+        Redirect to clock view on GET.
+        Only post allowed.
+        """     
+        return redirect(reverse_lazy('employee-clock-view'))
+    
+    
+    def post(self, request, *args, **kwargs):
+        """
+        Returns the Xlsx file as httpresponse
+        """
+        
+        output = io.BytesIO()
+
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+        worksheet.write(0, 0, 'Hello Test!')
+        workbook.close()
+
+        output.seek(0)
+
+        response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response['Content-Disposition'] = "attachment; filename=report.xlsx"
+
+        return response
