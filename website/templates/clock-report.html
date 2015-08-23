@@ -44,7 +44,7 @@
 	   
 	  {% else %}
 
-      <form class="form-date-search" method="post" action="{% url 'clock-search' %}">
+      <form class="form-date-search" method="post" action="{% url 'employee-clock-report' %}">
         <h2 class="form-signin-heading">Search Clocks</h2>
 		{% csrf_token %}
 		{{ form }}
@@ -54,7 +54,7 @@
       </form>
 	  
 	  {% endif %}
-	  
+
     </div> <!-- /container -->
 
 

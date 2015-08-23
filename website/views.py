@@ -259,36 +259,89 @@ class EmployeeClockSearchView(FormView):
             return self.form_invalid(form, **kwargs)
 
 
-class EmployeeXlsxReportView(View):
+class EmployeeXlsxReportView(FormView):
     """
-    Generates an Xlsx file based report
-    for an employees clocks in a given period.
-    """ 
+    View that allows employee objects to
+    generate a report for clock objects by providing
+    the day, month, and year of the clocks.
     
-    
-    def get(self, request, *args, **kwargs):
-        """
-        Redirect to clock view on GET.
-        Only post allowed.
-        """     
-        return redirect(reverse_lazy('employee-clock-view'))
+    Uses a range filter
+    """
+    template_name = 'clock-report.html'
+    form_class = ClockSearchForm
+    success_url = reverse_lazy('employee-clock-report')
     
     
     def post(self, request, *args, **kwargs):
-        """
-        Returns the Xlsx file as httpresponse
-        """
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
         
-        output = io.BytesIO()
+        #if the form is valid we process the data and make the query
+        if form.is_valid():
+            #make sure the employee is logged in. Double check
+            try:
+                username = self.request.session['username']
+            except KeyError:
+                messages.add_message(self.request, messages.ERROR, 'Sign in to continue')
+                return redirect(reverse_lazy('employee-view'))
+        
+            #get the employee object before we search for the clocks
+            try:
+                employee = Employee.objects.get(username=username)
+            except (ObjectDoesNotExist, MultipleObjectsReturned):
+                messages.add_message(self.request, messages.ERROR, 'There was an error in your request. Please try again.')
+                return redirect(reverse_lazy('employee-view'))        
+        
+            #filter clocks by date range selected on form
+            try:
+                #format the strings to input some sanity into this shit.
+                from_date_string = '{y}{m}{d}'.format(
+                                                    y=form.cleaned_data['from_year'],
+                                                    m=form.cleaned_data['from_month'],
+                                                    d=form.cleaned_data['from_day']
+                                                    )
+            
+                to_date_string = '{y}{m}{d}'.format(
+                                                    y=form.cleaned_data['to_year'],
+                                                    m=form.cleaned_data['to_month'],
+                                                    d=form.cleaned_data['to_day']
+                                                    )
+                #lets build the date objects first
+                from_date = datetime.strptime(from_date_string, "%Y%m%d").date()
+                to_date = datetime.strptime(to_date_string, "%Y%m%d").date()
+            
+                #worst filter ever
+                clocks = EmployeeClock.objects.filter(
+                                            timestamp__gt=from_date,
+                                            timestamp__lt=to_date,
+                                            employee=employee
+                                            )
+            
+                #pass the results from the filter to the context data
+                context = self.get_context_data(**kwargs)
+                context['clocks'] = clocks
+                
+                output = io.BytesIO()
 
-        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        worksheet = workbook.add_worksheet()
-        worksheet.write(0, 0, 'Hello Test!')
-        workbook.close()
+                workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+                worksheet = workbook.add_worksheet()
+                worksheet.write(0, 0, clocks[0].timestamp)
+                workbook.close()
 
-        output.seek(0)
+                output.seek(0)
 
-        response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        response['Content-Disposition'] = "attachment; filename=report.xlsx"
+                response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                response['Content-Disposition'] = "attachment; filename=report.xlsx"
 
-        return response
+                return response
+
+            
+            except Exception as e:
+                messages.add_message(self.request, messages.ERROR, 'Error: {error}'.format(error=e))
+                return redirect(reverse_lazy('employee-clock-report'))
+        
+            messages.add_message(self.request, messages.ERROR, 'Something went wrong. Please try again.')
+            return redirect(reverse_lazy('employee-view'))
+        
+        else:
+            return self.form_invalid(form, **kwargs)
